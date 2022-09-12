@@ -1,2 +1,7 @@
 # architecture-design-course-2022
-A repository for storing homeworks
+Репозиторий для домашек
+
+## Команда
+- Светлана Шмидт
+- Никита Строганов
+- Сергей Поспелов
