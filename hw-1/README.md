@@ -1,5 +1,13 @@
 # Архитектура CLI
 
+## Схемы
+
+### Class Diagram
+![class-diagram](schemes/hw-1-class-diagram.png)
+
+### Dataflow Diagram
+![dataflow-diagram](schemes/hw-1-dataflow-diagram.png)
+
 Ниже приведено описание архитектуры сразу для __фазы 2__. Изменения для __фазы 1__ явно написаны текстом под соответствующей секцией.
 
 В нашей системе есть несколько сущностей. Ниже приведено описание основных из них. 
@@ -87,13 +95,3 @@ API:
 ### Фаза 1
 
 Выполняет единственную команду
-
-# Схемы
-
-
-
-## Class Diagram
-![class-diagram](schemes/hw-1-class-diagram.png)
-
-## Dataflow Diagram
-![dataflow-diagram](schemes/hw-1-dataflow-diagram.png)
