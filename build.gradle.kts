@@ -11,4 +11,5 @@ repositories {
 
 dependencies {
 //    implementation kotlin("test-junit")
+    implementation(kotlin("reflect"))
 }
