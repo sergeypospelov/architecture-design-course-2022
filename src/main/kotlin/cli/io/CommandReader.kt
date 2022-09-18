@@ -5,7 +5,5 @@ interface CommandReader {
 }
 
 class ConsoleReader : CommandReader {
-    override fun readInput(): String {
-        TODO("Not yet implemented")
-    }
+    override fun readInput(): String = readln()
 }

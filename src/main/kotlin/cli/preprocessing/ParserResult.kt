@@ -11,3 +11,9 @@ data class CommandTemplate(
     val name: String,
     val arguments: List<String>
 ) : ParserResult
+
+object Retry : ParserResult
+
+data class ParseError(
+    val errorDescription: String
+) : ParserResult

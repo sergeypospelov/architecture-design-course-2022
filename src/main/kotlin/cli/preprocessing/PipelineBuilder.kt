@@ -1,14 +1,15 @@
-package cli.pipeline
+package cli.preprocessing
 
 import cli.command.Command
-import cli.preprocessing.CommandTemplate
 
 interface PipelineBuilder {
-    fun build(commandTemplate: CommandTemplate): Command
+    fun build(commandTemplate: CommandTemplate): Command?
 }
 
-class PipelineBuilderImpl : PipelineBuilder {
-    override fun build(commandTemplate: CommandTemplate): Command {
-        TODO("Not yet implemented")
+class PipelineBuilderImpl(
+    private val commandBuilder: CommandBuilder
+): PipelineBuilder {
+    override fun build(commandTemplate: CommandTemplate): Command? {
+        return commandBuilder.tryBuildCommand(commandTemplate)
     }
 }

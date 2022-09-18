@@ -10,5 +10,3 @@ interface Command {
 
     fun execute(inputStream: InputStream, outputStream: OutputStream): Int
 }
-
-

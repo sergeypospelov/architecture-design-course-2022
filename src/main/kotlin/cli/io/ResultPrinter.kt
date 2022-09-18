@@ -5,7 +5,5 @@ interface ResultPrinter {
 }
 
 class ConsolePrinter : ResultPrinter {
-    override fun printResult(result: String) {
-        TODO("Not yet implemented")
-    }
+    override fun printResult(result: String) = print(result) // TODO: unify '\n' in commands
 }

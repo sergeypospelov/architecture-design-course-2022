@@ -1,5 +1,7 @@
 package cli.command
 
+import cli.preprocessing.CommandBuilder
+import cli.preprocessing.CommandTemplate
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -9,6 +11,13 @@ class UnknownCommand(
 ) : Command {
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
-        TODO("Not yet implemented")
+        val process = ProcessBuilder(name, *arguments.toTypedArray()).start()
+
+        TODO()
+    }
+
+    object Builder : CommandBuilder {
+        override fun tryBuildCommand(template: CommandTemplate): Command =
+            UnknownCommand(template.name, template.arguments)
     }
 }
