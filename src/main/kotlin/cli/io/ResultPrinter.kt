@@ -5,5 +5,5 @@ interface ResultPrinter {
 }
 
 class ConsolePrinter : ResultPrinter {
-    override fun printResult(result: String) = print(result) // TODO: unify '\n' in commands
+    override fun printResult(result: String) = println(result)
 }

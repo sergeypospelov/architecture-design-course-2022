@@ -14,7 +14,6 @@ class PwdCommand(
 ) : Command {
     override val name = PWD_COMMAND_NAME
 
-
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
         outputStream.printAndFlush(SessionContext.currentDirectory.toAbsolutePath().toString())
         return 0

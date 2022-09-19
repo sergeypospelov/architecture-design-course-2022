@@ -1,27 +1,13 @@
 package cli
 
-import cli.command.CatCommand
-import cli.command.EchoCommand
-import cli.command.ExitCommand
-import cli.command.PwdCommand
-import cli.command.UnknownCommand
-import cli.command.WcCommand
-import cli.command.commandNotFound
+import cli.command.*
 import cli.execution.CommandExecutor
 import cli.execution.CommandExecutorImpl
 import cli.io.CommandReader
 import cli.io.ConsolePrinter
 import cli.io.ConsoleReader
 import cli.io.ResultPrinter
-import cli.preprocessing.CommandBuilder
-import cli.preprocessing.CommandParser
-import cli.preprocessing.CommandParserImpl
-import cli.preprocessing.CommandTemplate
-import cli.preprocessing.MultiCommandBuilder
-import cli.preprocessing.ParseError
-import cli.preprocessing.Retry
-import cli.preprocessing.VariableAssignment
-
+import cli.preprocessing.*
 
 fun main() {
     val commandReader: CommandReader = ConsoleReader()
@@ -44,6 +30,7 @@ fun main() {
     val resultPrinter: ResultPrinter = ConsolePrinter()
 
     while (true) {
+        print("$ ")
         val input = commandReader.readInput()
 
         when (val parserResult = commandParser.parse(input)) {

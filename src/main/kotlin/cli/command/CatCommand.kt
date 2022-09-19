@@ -23,9 +23,7 @@ class CatCommand(
 
     private fun executeEmptyArguments(inputStream: InputStream, outputStream: OutputStream): Int {
         inputStream.reader().forEachLine { inputString ->
-            outputStream.apply {
-                printAndFlush(inputString)
-            }
+            outputStream.printAndFlush(inputString + "\n")
         }
         return 0
     }
@@ -33,7 +31,7 @@ class CatCommand(
     private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
         checkExistsAndNotDirectory(fileName, outputStream) { file ->
             val text = file.readText()
-            outputStream.printAndFlush(text)
+            outputStream.printAndFlush(text + "\n")
             0
         }
 
