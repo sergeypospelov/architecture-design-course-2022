@@ -13,8 +13,6 @@ import cli.io.CommandReader
 import cli.io.ConsolePrinter
 import cli.io.ConsoleReader
 import cli.io.ResultPrinter
-import cli.preprocessing.PipelineBuilder
-import cli.preprocessing.PipelineBuilderImpl
 import cli.preprocessing.CommandBuilder
 import cli.preprocessing.CommandParser
 import cli.preprocessing.CommandParserImpl
@@ -39,7 +37,7 @@ fun main() {
         addCommandBuilder(UnknownCommand.Builder)
     }
 
-    val pipelineBuilder: PipelineBuilder = PipelineBuilderImpl(commandBuilder)
+//    val pipelineBuilder: PipelineBuilder = PipelineBuilderImpl(commandBuilder)
 
     val commandExecutor: CommandExecutor = CommandExecutorImpl(System.`in`)
 
@@ -51,7 +49,8 @@ fun main() {
         when (val parserResult = commandParser.parse(input)) {
             Retry -> continue
             is CommandTemplate -> {
-                val command = pipelineBuilder.build(parserResult)
+//                val command = pipelineBuilder.build(parserResult)
+                val command = commandBuilder.tryBuildCommand(parserResult)
 
                 if (command == null) {
                     resultPrinter.printResult(commandNotFound(parserResult.name))
@@ -62,11 +61,11 @@ fun main() {
                 val (result, _) = commandExecutor.execute(command)
                 resultPrinter.printResult(result)
             }
-            is VariableAssignment -> TODO() // maybe change exit code?
             is ParseError -> {
                 resultPrinter.printResult(parserResult.errorDescription)
                 // maybe change exit code?
             }
+            is VariableAssignment -> TODO() // maybe change exit code?
         }
     }
 }
