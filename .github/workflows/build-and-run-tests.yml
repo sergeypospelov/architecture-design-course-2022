@@ -38,6 +38,9 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       # Runs a set of commands using the runners shell
       - name: Build and run tests
         run: ./gradlew build --no-daemon
