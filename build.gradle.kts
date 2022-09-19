@@ -10,6 +10,9 @@ repositories {
 }
 
 dependencies {
-//    implementation kotlin("test-junit")
-    implementation(kotlin("reflect"))
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
