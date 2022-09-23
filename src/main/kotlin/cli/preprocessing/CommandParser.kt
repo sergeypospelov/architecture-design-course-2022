@@ -28,35 +28,18 @@ class CommandParserImpl : CommandParser {
         for (c in string) {
             when (state) {
                 ParseState.NoQuotes -> when (c) {
-                    '\'' -> {
-                        state = ParseState.SingleQuote
-                    }
-                    '\"' -> {
-                        state = ParseState.DoubleQuote
-                    }
-                    ' ' -> {
-                        addToken()
-                    }
-                    else -> {
-                        token += c
-                    }
+                    '\'' -> state = ParseState.SingleQuote
+                    '\"' -> state = ParseState.DoubleQuote
+                    ' '  -> addToken()
+                    else -> token += c
                 }
                 ParseState.SingleQuote -> when (c) {
-                    '\'' -> {
-                        state = ParseState.NoQuotes
-                    }
-                    else -> {
-                        token += c
-                    }
-
+                    '\'' -> state = ParseState.NoQuotes
+                    else -> token += c
                 }
                 ParseState.DoubleQuote -> when (c) {
-                    '\"' -> {
-                        state = ParseState.NoQuotes
-                    }
-                    else -> {
-                        token += c
-                    }
+                    '\"' -> state = ParseState.NoQuotes
+                    else -> token += c
                 }
             }
         }

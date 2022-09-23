@@ -17,7 +17,6 @@ class EchoCommand(
         for (arg in arguments) {
             outputStream.printAndFlush(arg)
         }
-        outputStream.printAndFlush("\n")
         return 0
     }
 

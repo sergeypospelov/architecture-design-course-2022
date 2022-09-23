@@ -31,7 +31,7 @@ class CatCommand(
     private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
         checkExistsAndNotDirectory(fileName, outputStream) { file ->
             val text = file.readText()
-            outputStream.printAndFlush(text + "\n")
+            outputStream.printAndFlush(text)
             0
         }
 
