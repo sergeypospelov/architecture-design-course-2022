@@ -19,3 +19,9 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "cli.MainKt"
+    from(configurations.runtimeClasspath.get().map(::zipTree))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
