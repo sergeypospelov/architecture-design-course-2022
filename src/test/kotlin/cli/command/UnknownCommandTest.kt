@@ -4,6 +4,7 @@ import cli.command.TestUtil.convertToString
 import org.apache.commons.lang3.SystemUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -22,6 +23,7 @@ class UnknownCommandTest {
     }
 
     @Test
+    @Disabled
     fun `should call python`() {
         val name = "python"
         val arguments = listOf("./src/test/resources/script.py")
