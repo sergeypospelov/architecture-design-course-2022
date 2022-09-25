@@ -23,7 +23,7 @@ class UnknownCommandTest {
 
     @Test
     fun `should call python`() {
-        val name = "python"
+        val name = if (SystemUtils.IS_OS_WINDOWS) "python" else "python3"
         val arguments = listOf("./src/test/resources/script.py")
         val outputStream = ByteArrayOutputStream()
         val exitCode = UnknownCommand(name, arguments)
