@@ -12,6 +12,7 @@ private const val PWD_COMMAND_NAME = "pwd"
 class PwdCommand(
     override val arguments: List<String>
 ) : Command {
+
     override val name = PWD_COMMAND_NAME
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {

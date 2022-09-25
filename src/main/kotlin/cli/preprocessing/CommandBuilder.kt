@@ -7,6 +7,7 @@ interface CommandBuilder {
 }
 
 class MultiCommandBuilder : CommandBuilder {
+
     private val delegateBuilders = mutableListOf<CommandBuilder>()
 
     fun addCommandBuilder(builder: CommandBuilder) {
@@ -34,5 +35,4 @@ fun defaultCommandBuilder(
         } else {
             null
         }
-
 }

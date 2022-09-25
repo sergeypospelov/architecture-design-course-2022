@@ -12,6 +12,7 @@ private const val WC_COMMAND_NAME = "wc"
 class WcCommand(
     override val arguments: List<String>
 ) : Command {
+
     override val name: String = WC_COMMAND_NAME
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =

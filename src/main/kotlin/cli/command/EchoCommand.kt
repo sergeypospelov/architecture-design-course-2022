@@ -11,6 +11,7 @@ private const val ECHO_COMMAND_NAME = "echo"
 class EchoCommand(
     override val arguments: List<String>
 ) : Command {
+
     override val name: String = ECHO_COMMAND_NAME
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {

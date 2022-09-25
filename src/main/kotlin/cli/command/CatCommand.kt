@@ -12,6 +12,7 @@ private const val CAT_COMMAND_NAME = "cat"
 class CatCommand(
     override val arguments: List<String>
 ) : Command {
+
     override val name: String = CAT_COMMAND_NAME
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =

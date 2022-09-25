@@ -4,6 +4,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 interface Command {
+
     val name: String
 
     val arguments: List<String>
