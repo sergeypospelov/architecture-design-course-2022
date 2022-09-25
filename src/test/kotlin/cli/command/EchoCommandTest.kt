@@ -1,5 +1,6 @@
 package cli.command
 
+import cli.command.TestUtil.convertToString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
@@ -50,9 +51,4 @@ class EchoCommandTest {
                 assertEquals(arguments.joinToString(""), outputStream.convertToString())
             }
         }
-
-    // internal
-
-    private fun ByteArrayOutputStream.convertToString() =
-        String(this.toByteArray())
 }
