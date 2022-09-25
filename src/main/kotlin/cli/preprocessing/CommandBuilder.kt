@@ -1,38 +1,20 @@
 package cli.preprocessing
 
-import cli.command.Command
+import cli.command.*
 
 interface CommandBuilder {
-    fun tryBuildCommand(template: CommandTemplate): Command?
+    fun buildCommand(template: CommandTemplate): Command
 }
 
-class MultiCommandBuilder : CommandBuilder {
+class CommandBuilderImpl : CommandBuilder {
 
-    private val delegateBuilders = mutableListOf<CommandBuilder>()
-
-    fun addCommandBuilder(builder: CommandBuilder) {
-        delegateBuilders.add(builder)
-    }
-
-    override fun tryBuildCommand(template: CommandTemplate): Command? {
-        for (builder in delegateBuilders) {
-            val cmd = builder.tryBuildCommand(template)
-            if (cmd != null) {
-                return cmd
-            }
-        }
-        return null
-    }
-}
-
-fun defaultCommandBuilder(
-    name: String,
-    producer: (List<String>) -> Command
-) : CommandBuilder = object : CommandBuilder {
-    override fun tryBuildCommand(template: CommandTemplate): Command? =
-        if (template.name == name) {
-            producer.invoke(template.arguments)
-        } else {
-            null
+    override fun buildCommand(template: CommandTemplate): Command =
+        when (template.name) {
+            "cat"  -> CatCommand(template.arguments)
+            "echo" -> EchoCommand(template.arguments)
+            "exit" -> ExitCommand()
+            "pwd"  -> PwdCommand(template.arguments)
+            "wc"   -> WcCommand(template.arguments)
+            else   -> UnknownCommand(template.name, template.arguments)
         }
 }

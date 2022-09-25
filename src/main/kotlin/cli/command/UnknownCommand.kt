@@ -1,7 +1,5 @@
 package cli.command
 
-import cli.preprocessing.CommandBuilder
-import cli.preprocessing.CommandTemplate
 import org.apache.commons.lang3.SystemUtils
 import java.io.InputStream
 import java.io.OutputStream
@@ -26,10 +24,5 @@ class UnknownCommand(
             SystemUtils.IS_OS_UNIX -> listOf("sh", "-c")
             else -> listOf("sh", "-c")
         }
-    }
-
-    object Builder : CommandBuilder {
-        override fun tryBuildCommand(template: CommandTemplate): Command =
-            UnknownCommand(template.name, template.arguments)
     }
 }

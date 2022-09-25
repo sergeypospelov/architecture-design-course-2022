@@ -1,8 +1,6 @@
 package cli.command
 
 import cli.io.printAndFlush
-import cli.preprocessing.CommandBuilder
-import cli.preprocessing.defaultCommandBuilder
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.io.path.readText
@@ -30,28 +28,20 @@ class WcCommand(override val arguments: List<String>) : Command {
         val lines = text.count { it == '\n' }
         val words = text.trim().split("\\s+".toRegex()).size
         val bytes = text.length
-
         return Result(lines, words, bytes)
     }
 
     private fun executeEmptyArguments(inputStream: InputStream, outputStream: OutputStream): Int {
         val (lines, words, bytes) = computeResult(inputStream.reader().readText())
-
         outputStream.printAndFlush("%7d %7d %7d ".format(lines, words, bytes))
-
         return 0
     }
 
     private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
         checkExistsAndNotDirectory(fileName, outputStream) { file ->
             val text = file.readText()
-
             val (lines, words, bytes) = computeResult(text)
-
             outputStream.printAndFlush("%7d %7d %7d %s".format(lines, words, bytes, fileName))
-
             0
         }
-
-    object Builder : CommandBuilder by defaultCommandBuilder(WC_COMMAND_NAME, ::WcCommand)
 }

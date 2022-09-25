@@ -33,5 +33,3 @@ internal fun Command.checkExistsAndNotDirectory(
         else -> block(file)
     }
 }
-
-internal fun commandNotFound(commandName: String): String = "bash: $commandName: $COMMAND_NOT_FOUND\n"

@@ -9,6 +9,7 @@ interface CommandExecutor {
 }
 
 class CommandExecutorImpl(private val defaultInputStream: InputStream) : CommandExecutor {
+
     override fun execute(command: Command): ExecutionResult {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val exitCode = command.execute(defaultInputStream, byteArrayOutputStream)
