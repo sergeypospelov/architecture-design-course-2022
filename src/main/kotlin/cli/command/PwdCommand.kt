@@ -7,9 +7,11 @@ import java.io.OutputStream
 
 private const val PWD_COMMAND_NAME = "pwd"
 
-class PwdCommand(override val arguments: List<String>) : Command {
+class PwdCommand : Command {
 
     override val name = PWD_COMMAND_NAME
+
+    override val arguments: List<String> = listOf()
 
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
         outputStream.printAndFlush(SessionContext.currentDirectory.toAbsolutePath().toString())
