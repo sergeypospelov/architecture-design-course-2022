@@ -9,8 +9,7 @@ class CommandParserImpl : CommandParser {
     private enum class ParseState {
         NoQuotes,
         SingleQuote,
-        DoubleQuote {
-        }
+        DoubleQuote
     }
 
     override fun parse(string: String): ParserResult {
@@ -30,7 +29,7 @@ class CommandParserImpl : CommandParser {
                 ParseState.NoQuotes -> when (c) {
                     '\'' -> state = ParseState.SingleQuote
                     '\"' -> state = ParseState.DoubleQuote
-                    ' '  -> addToken()
+                    ' ', '\t', '\n'  -> addToken()
                     else -> token += c
                 }
                 ParseState.SingleQuote -> when (c) {
