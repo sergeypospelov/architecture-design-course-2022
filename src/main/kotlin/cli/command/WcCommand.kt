@@ -15,7 +15,7 @@ class WcCommand(override val arguments: List<String>) : Command {
         if (arguments.isEmpty()) {
             executeEmptyArguments(inputStream, outputStream)
         } else {
-            executeOnFile(arguments[0], outputStream)
+            executeOnFiles(arguments, outputStream)
         }
 
     private data class Result(
@@ -24,9 +24,11 @@ class WcCommand(override val arguments: List<String>) : Command {
         val bytes: Int,
     )
 
+    private val results = mutableListOf<Result>()
+
     private fun computeResult(text: String): Result {
         val lines = text.count { it == '\n' }
-        val words = text.trim().split("\\s+".toRegex()).size
+        val words = text.split("\\s+".toRegex()).filterNot { it.isBlank() }.size
         val bytes = text.length
         return Result(lines, words, bytes)
     }
@@ -37,11 +39,38 @@ class WcCommand(override val arguments: List<String>) : Command {
         return 0
     }
 
+    private fun executeOnFiles(fileNames: List<String>, outputStream: OutputStream): Int {
+        if (fileNames.size == 1) {
+            return executeOnFile(fileNames[0], outputStream)
+        }
+        val exitCodes = fileNames.map { fileName ->
+            val exitCode = executeOnFile(fileName, outputStream)
+            if (exitCode == 0)
+                outputStream.printAndFlush("\n")
+            exitCode
+        }
+        val (lines, words, bytes) = aggregateResults()
+        outputStream.printAndFlush("%7d %7d %7d %s".format(lines, words, bytes, "total"))
+        return exitCodes.firstOrNull { it != 0 } ?: 0
+    }
+
     private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
         checkExistsAndNotDirectory(fileName, outputStream) { file ->
             val text = file.readText()
-            val (lines, words, bytes) = computeResult(text)
+            val result = computeResult(text)
+            results += result
+            val (lines, words, bytes) = result
             outputStream.printAndFlush("%7d %7d %7d %s".format(lines, words, bytes, fileName))
             0
         }
+
+    private fun aggregateResults(): Result {
+        var (totalLines, totalWords, totalBytes) = Result(0, 0, 0)
+        for ((lines, words, bytes) in results) {
+            totalLines += lines
+            totalWords += words
+            totalBytes += bytes
+        }
+        return Result(totalLines, totalWords, totalBytes)
+    }
 }
