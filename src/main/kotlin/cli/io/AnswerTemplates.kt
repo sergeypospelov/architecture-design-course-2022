@@ -9,7 +9,6 @@ import kotlin.io.path.isDirectory
 
 private const val FILE_DOES_NOT_EXIST = "No such file or directory"
 private const val FILE_IS_DIRECTORY = "Is a directory"
-private const val COMMAND_NOT_FOUND = "command not found"
 
 internal fun Command.fileDoesNotExist(fileName: String): String = "$name: $fileName: $FILE_DOES_NOT_EXIST\n"
 

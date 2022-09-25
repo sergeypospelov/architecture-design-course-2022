@@ -3,6 +3,7 @@ package cli.command
 import cli.command.TestUtil.convertToString
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -69,4 +70,24 @@ class CatCommandTest {
                 assertEquals(expectedOutput, outputStream.convertToString())
             }
         }
+
+    @Test
+    fun `should fail if the file does not exist`() {
+        val filePath = "./src/test/resources/some_weird_file_name.wtf"
+        val outputStream = ByteArrayOutputStream()
+        val catCommand = CatCommand(listOf(filePath))
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+        assertEquals(1, exitCode)
+        assertEquals(catCommand.fileDoesNotExist(filePath), outputStream.convertToString())
+    }
+
+    @Test
+    fun `should fail if the file is a directory`() {
+        val filePath = "./src/test/resources/directory"
+        val outputStream = ByteArrayOutputStream()
+        val catCommand = CatCommand(listOf(filePath))
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+        assertEquals(1, exitCode)
+        assertEquals(catCommand.fileIsDirectory(filePath), outputStream.convertToString())
+    }
 }
