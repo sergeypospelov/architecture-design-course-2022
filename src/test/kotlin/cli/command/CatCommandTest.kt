@@ -73,21 +73,53 @@ class CatCommandTest {
 
     @Test
     fun `should fail if the file does not exist`() {
-        val filePath = "./src/test/resources/some_weird_file_name.wtf"
+        val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
         val outputStream = ByteArrayOutputStream()
-        val catCommand = CatCommand(listOf(filePath))
+        val catCommand = CatCommand(listOf(fakeFile))
         val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
         assertEquals(1, exitCode)
-        assertEquals(catCommand.fileDoesNotExist(filePath), outputStream.convertToString())
+        assertEquals(catCommand.fileDoesNotExist(fakeFile), outputStream.convertToString())
+    }
+
+    @Test
+    fun `should process all existing files`() {
+        val trueFile = "./src/test/resources/line.txt"
+        val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
+        val outputStream = ByteArrayOutputStream()
+        val catCommand = CatCommand(listOf(trueFile, fakeFile, trueFile))
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+        assertEquals(1, exitCode)
+        val expectedOutput = listOf(
+            File(trueFile).readText(),
+            catCommand.fileDoesNotExist(fakeFile), // only the second file was not processed correctly
+            File(trueFile).readText()
+        ).joinToString("")
+        assertEquals(expectedOutput, outputStream.convertToString())
     }
 
     @Test
     fun `should fail if the file is a directory`() {
-        val filePath = "./src/test/resources/directory"
+        val directory = "./src/test/resources/directory"
         val outputStream = ByteArrayOutputStream()
-        val catCommand = CatCommand(listOf(filePath))
+        val catCommand = CatCommand(listOf(directory))
         val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
         assertEquals(1, exitCode)
-        assertEquals(catCommand.fileIsDirectory(filePath), outputStream.convertToString())
+        assertEquals(catCommand.fileIsDirectory(directory), outputStream.convertToString())
+    }
+
+    @Test
+    fun `should process all files that are not directories`() {
+        val trueFile = "./src/test/resources/line.txt"
+        val directory = "./src/test/resources/directory"
+        val outputStream = ByteArrayOutputStream()
+        val catCommand = CatCommand(listOf(trueFile, directory, trueFile))
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+        assertEquals(1, exitCode)
+        val expectedOutput = listOf(
+            File(trueFile).readText(),
+            catCommand.fileIsDirectory(directory), // only the second file was not processed correctly
+            File(trueFile).readText()
+        ).joinToString("")
+        assertEquals(expectedOutput, outputStream.convertToString())
     }
 }
