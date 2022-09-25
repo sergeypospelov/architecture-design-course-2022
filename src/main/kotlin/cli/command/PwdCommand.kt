@@ -9,9 +9,7 @@ import java.io.OutputStream
 
 private const val PWD_COMMAND_NAME = "pwd"
 
-class PwdCommand(
-    override val arguments: List<String>
-) : Command {
+class PwdCommand(override val arguments: List<String>) : Command {
 
     override val name = PWD_COMMAND_NAME
 

@@ -9,9 +9,7 @@ import kotlin.io.path.readText
 
 private const val CAT_COMMAND_NAME = "cat"
 
-class CatCommand(
-    override val arguments: List<String>
-) : Command {
+class CatCommand(override val arguments: List<String>) : Command {
 
     override val name: String = CAT_COMMAND_NAME
 
