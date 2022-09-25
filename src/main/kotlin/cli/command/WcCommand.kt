@@ -29,7 +29,7 @@ class WcCommand(override val arguments: List<String>) : Command {
     private fun computeResult(text: String): Result {
         val lines = text.count { it == '\n' }
         val words = text.split("\\s+".toRegex()).filterNot { it.isBlank() }.size
-        val bytes = text.length
+        val bytes = text.replace("\r\n", "\n").length
         return Result(lines, words, bytes)
     }
 

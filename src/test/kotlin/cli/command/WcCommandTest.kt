@@ -45,11 +45,11 @@ class WcCommandTest {
             "empty.txt"
                 to WcResult(0, 0, 0),
             "blank.txt"
-                to WcResult(7, 0, 14),
+                to WcResult(7, 0, 7),
             "line.txt"
                 to WcResult(0, 3, 13),
             "text.txt"
-                to WcResult(9, 10, 77),
+                to WcResult(9, 10, 68),
         ).mapIndexed { index, (fileName, expectedResult) ->
             DynamicTest.dynamicTest("$index. $fileName") {
                 val testFile = File("./src/test/resources/$fileName")
@@ -76,20 +76,20 @@ class WcCommandTest {
             listOf("empty.txt", "blank.txt", "line.txt", "empty.txt")
                 to listOf(
                     WcResult(0, 0, 0),
-                    WcResult(7, 0, 14),
+                    WcResult(7, 0, 7),
                     WcResult(0, 3, 13),
                     WcResult(0, 0, 0),
-                    WcResult(7, 3, 27, "total")
+                    WcResult(7, 3, 20, "total")
                 ),
             listOf("text.txt", "empty.txt", "line.txt", "text.txt", "empty.txt", "blank.txt")
                 to listOf(
-                    WcResult(9, 10, 77),
+                    WcResult(9, 10, 68),
                     WcResult(0, 0, 0),
                     WcResult(0, 3, 13),
-                    WcResult(9, 10, 77),
+                    WcResult(9, 10, 68),
                     WcResult(0, 0, 0),
-                    WcResult(7, 0, 14),
-                    WcResult(25, 23, 181, "total")
+                    WcResult(7, 0, 7),
+                    WcResult(25, 23, 156, "total")
                 ),
         ).mapIndexed { index, (fileNames, expectedResults) ->
             DynamicTest.dynamicTest("$index. $fileNames") {
