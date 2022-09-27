@@ -7,10 +7,20 @@ import kotlin.io.path.readText
 
 private const val CAT_COMMAND_NAME = "cat"
 
+/**
+ * Implementation of [Command] interface for bash command cat:
+ * cat - display the contents of a file
+ * @property arguments contains files to display
+ */
 class CatCommand(override val arguments: List<String>) : Command {
 
     override val name: String = CAT_COMMAND_NAME
 
+    /**
+     * if [arguments] are empty, prints [inputStream] to [outputStream]
+     * otherwise prints the contents of files passed in [arguments] to [outputStream]
+     * @return status code (0 if success, other if error)
+     */
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =
         if (arguments.isEmpty()) {
             executeEmptyArguments(inputStream, outputStream)

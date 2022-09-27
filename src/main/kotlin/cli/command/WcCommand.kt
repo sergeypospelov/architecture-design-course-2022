@@ -7,10 +7,19 @@ import kotlin.io.path.readText
 
 private const val WC_COMMAND_NAME = "wc"
 
+/**
+ * Implementation of [Command] interface for bash command wc:
+ * wc - display the [Result] for file
+ * @property arguments contains files to display the info above
+ */
 class WcCommand(override val arguments: List<String>) : Command {
 
     override val name: String = WC_COMMAND_NAME
 
+    /**
+     * if [arguments] are empty, print [Result] for [inputStream] to [outputStream]
+     * otherwise print [Result] for files passed in [arguments] to [outputStream]
+     */
     override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =
         if (arguments.isEmpty()) {
             executeEmptyArguments(inputStream, outputStream)

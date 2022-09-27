@@ -1,9 +1,13 @@
 package cli.preprocessing
 
 interface CommandParser {
+    /** parses [string] to [ParserResult] */
     fun parse(string: String): ParserResult
 }
 
+/**
+ * Implementation for [CommandParser]
+ */
 class CommandParserImpl : CommandParser {
 
     private enum class ParseState {

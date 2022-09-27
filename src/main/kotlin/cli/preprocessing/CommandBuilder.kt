@@ -3,9 +3,15 @@ package cli.preprocessing
 import cli.command.*
 
 interface CommandBuilder {
+    /**
+     * builds [Command] from [CommandTemplate]
+     */
     fun buildCommand(template: CommandTemplate): Command
 }
 
+/**
+ * [CommandBuilder] implementation
+ */
 class CommandBuilderImpl : CommandBuilder {
 
     override fun buildCommand(template: CommandTemplate): Command =

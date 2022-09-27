@@ -29,7 +29,7 @@ fun main() {
             is ParseError -> {
                 resultPrinter.printResult(parserResult.errorDescription)
             }
-            is VariableAssignment -> TODO()
+            is VariableAssignment -> TODO("Phase 2: add variable assignment")
         }
     }
 }
