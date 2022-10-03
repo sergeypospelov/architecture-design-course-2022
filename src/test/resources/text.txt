@@ -1,0 +1,10 @@
+some test text
+"with"
+'new' lines
+    tabs
+    `and`
+
+
+blank
+
+lines.
