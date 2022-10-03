@@ -11,7 +11,10 @@ interface CommandExecutor {
     fun execute(command: Command): ExecutionResult
 }
 
-class CommandExecutorImpl(private val defaultInputStream: InputStream) : CommandExecutor {
+/**
+ * @param [inputStream] used as an input stream for a single command.
+ */
+class CommandExecutorImpl(private val inputStream: InputStream) : CommandExecutor {
 
     /**
      * executes [command]
@@ -20,7 +23,7 @@ class CommandExecutorImpl(private val defaultInputStream: InputStream) : Command
      */
     override fun execute(command: Command): ExecutionResult {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        val exitCode = command.execute(defaultInputStream, byteArrayOutputStream)
+        val exitCode = command.execute(inputStream, byteArrayOutputStream)
         val result = byteArrayOutputStream.toByteArray().decodeToString()
         return ExecutionResult(result, exitCode)
     }
