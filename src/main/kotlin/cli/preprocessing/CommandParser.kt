@@ -8,9 +8,7 @@ interface CommandParser {
 /**
  * Implementation for [CommandParser]
  */
-class CommandParserImpl(
-    private val variables: Map<String, String> = emptyMap()
-) : CommandParser {
+class CommandParserImpl : CommandParser {
 
     private enum class ParseState {
         NoQuotes,
@@ -18,8 +16,8 @@ class CommandParserImpl(
         DoubleQuote
     }
 
-
-    private fun String.canAppend(ch: Char) = (ch.isLetter() or (ch == '_') or (ch.isDigit() && isNotEmpty()))
+    private fun String.canAppend(ch: Char) =
+        (ch.isLetter() or (ch == '_') or (ch.isDigit() && isNotEmpty()) or (ch == '?'))
 
     private fun parseVariableAssignment(string: String): ParserResult? {
         var firstEqIdx = -1
@@ -56,71 +54,13 @@ class CommandParserImpl(
             }
         }
 
-        val rightSubstring = string.substring(firstEqIdx + 1, string.length)
-        val right = makeSubstitutions(rightSubstring)
+        val right = string.substring(firstEqIdx + 1, string.length)
 
         return VariableAssignment(left, right)
     }
 
-    private fun makeSubstitutions(string: String): String {
-        val result = StringBuilder()
-
-        var openC: Char? = null
-
-        var isVariable = false
-        var variable = ""
-
-        fun substitute() {
-            if (variable.isNotEmpty()) {
-                val value = variables.getOrDefault(variable, "")
-                result.append(value)
-                isVariable = false
-                variable = ""
-            }
-        }
-
-        for (c in string) {
-            if (isVariable && variable.canAppend(c)) {
-                variable += c
-                continue
-            }
-            substitute()
-            if (openC != null) {
-                if (c == '$' && openC == '\"') {
-                    isVariable = true
-                } else if (c == openC) {
-                    openC = null
-                    result.append(c)
-                } else {
-                    result.append(c)
-                }
-            } else {
-                if (c == '$') {
-                    isVariable = true
-                } else if (c == '\'' || c == '\"') {
-                    openC = c
-                    result.append(c)
-                 } else {
-                    result.append(c)
-                }
-            }
-        }
-        substitute() // last variable
-
-
-        return result.toString()
-    }
-
-    override fun parse(string: String): ParserResult {
-        val variableAssignment = parseVariableAssignment(string)
-        if (variableAssignment != null) {
-            return variableAssignment
-        }
-
-        val stringWithSubstitutions = makeSubstitutions(string)
-
-        return parseImpl(stringWithSubstitutions)
-    }
+    override fun parse(string: String): ParserResult =
+        parseVariableAssignment(string) ?: parseImpl(string)
 
     private fun parseImpl(string: String): ParserResult {
         val commands = mutableListOf<CommandTemplate>()

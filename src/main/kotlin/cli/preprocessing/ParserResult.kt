@@ -9,7 +9,6 @@ sealed interface ParserResult
 
 /**
  * assignment of a new variable
- * TODO(Phase 2: add variable assignment)
  */
 data class VariableAssignment(
     val name: String,

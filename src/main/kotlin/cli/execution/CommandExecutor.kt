@@ -24,24 +24,19 @@ class CommandExecutorImpl(
     /**
      * executes [pipeline]
      * @return exitCode of last instruction
-     * TODO("Phase 2: Add command sequence instead of one command at")
      */
     override fun execute(pipeline: Pipeline): Int {
-        var inputStream = inputStream
-
         var lastExitCode = 0
 
+        var inputStream = inputStream
         for (command in pipeline.commands) {
             val byteArrayOutputStream = ByteArrayOutputStream()
-
             val exitCode = command.execute(inputStream, byteArrayOutputStream, errorStream)
             inputStream = byteArrayOutputStream.toByteArray().inputStream()
-
             lastExitCode = exitCode
         }
-
         inputStream.copyTo(outputStream)
-
+        outputStream.write("\n".toByteArray())
 
         return lastExitCode
     }

@@ -9,5 +9,5 @@ import java.nio.file.Paths
 object SessionContext {
     var currentDirectory: Path = Paths.get(".")
 
-    val variables: MutableMap<String, String> = mutableMapOf()
+    val variables: EnvironmentVariables = EnvironmentVariables()
 }

@@ -4,34 +4,35 @@ import cli.context.SessionContext
 import cli.execution.CommandExecutor
 import cli.execution.CommandExecutorImpl
 import cli.io.CommandReader
-import cli.io.ConsolePrinter
 import cli.io.ConsoleReader
-import cli.io.ResultPrinter
 import cli.preprocessing.*
 
 fun main() {
     val commandReader: CommandReader = ConsoleReader()
-    val commandParser: CommandParser = CommandParserImpl(SessionContext.variables)
+    val substitutor: Substitutor = SubstitutorImpl()
+    val commandParser: CommandParser = CommandParserImpl()
     val commandBuilder: CommandBuilder = CommandBuilderImpl()
     val pipelineBuilder: PipelineBuilder = PipelineBuilderImpl(commandBuilder)
     val commandExecutor: CommandExecutor = CommandExecutorImpl(System.`in`, System.out, System.err)
-    val resultPrinter: ResultPrinter = ConsolePrinter()
+    // val resultPrinter: ResultPrinter = ConsolePrinter()
 
     while (true) {
         print("$ ")
         val input = commandReader.readInput()
+        val substitutorResult = substitutor.substitute(input)
 
-        when (val parserResult = commandParser.parse(input)) {
+        when (val parserResult = commandParser.parse(substitutorResult)) {
             Retry -> continue
             is CommandSequenceTemplate -> {
                 val pipeline = pipelineBuilder.buildPipeline(parserResult)
-                commandExecutor.execute(pipeline)
+                val exitCode = commandExecutor.execute(pipeline)
+                SessionContext.variables.set("?", exitCode.toString())
             }
             is ParseError -> {
-                resultPrinter.printResult(parserResult.errorDescription)
+                println(parserResult.errorDescription)
             }
             is VariableAssignment -> {
-                SessionContext.variables[parserResult.name] = parserResult.value
+                SessionContext.variables.set(parserResult.name, parserResult.value)
             }
         }
     }

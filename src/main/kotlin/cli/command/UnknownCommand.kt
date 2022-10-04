@@ -1,5 +1,6 @@
 package cli.command
 
+import cli.context.SessionContext
 import org.apache.commons.lang3.SystemUtils
 import java.io.InputStream
 import java.io.OutputStream
@@ -19,6 +20,12 @@ class UnknownCommand(
      */
     override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int {
         val process = ProcessBuilder()
+            .apply {
+                val env = environment()
+                SessionContext.variables.getAll().forEach { (variable, value) ->
+                    env[variable] = value
+                }
+            }
             .command(*consoleRunnerPrefix.toTypedArray(), name, *arguments.toTypedArray())
             .start()
         val exitCode = process.waitFor()
