@@ -2,7 +2,15 @@ package cli.preprocessing
 
 import cli.context.SessionContext
 
+/**
+ * Interface for substitution environmental variables with their values
+ */
 interface Substitutor {
+    /**
+     * @param string -- command in string representation
+     * Given command, method substitutes environmental variables stored in [SessionContext] with their values
+     * @return command in string representation
+     */
     fun substitute(string: String): String
 }
 
