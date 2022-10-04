@@ -35,7 +35,10 @@ class CatCommand(override val arguments: List<String>) : Command {
         }
 
     private fun executeEmptyArguments(inputStream: InputStream, outputStream: OutputStream): Int {
-        inputStream.reader().forEachLine { inputString ->
+        inputStream.reader().readLines().forEachIndexed { index, inputString ->
+            if (index != 0) {
+                outputStream.printAndFlush("\n")
+            }
             outputStream.printAndFlush(inputString)
         }
         return 0

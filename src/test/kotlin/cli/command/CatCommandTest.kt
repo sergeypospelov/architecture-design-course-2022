@@ -32,7 +32,7 @@ class CatCommandTest {
                     .execute(inputStream, outputStream, errorStream)
 
                 assertEquals(0, exitCode)
-                assertEquals(userInput + "\n", outputStream.convertToString())
+                assertEquals(userInput, outputStream.convertToString())
                 assertEquals("", errorStream.convertToString())
             }
         }
