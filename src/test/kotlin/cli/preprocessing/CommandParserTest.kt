@@ -96,4 +96,58 @@ class CommandParserTest {
                 assertEquals("Unmatched quote", errorDescription)
             }
         }
+
+    @TestFactory
+    fun `should parse variable assignment`() =
+        listOf(
+            "a=b" to VariableAssignment("a", "b"),
+            "a=" to VariableAssignment("a", ""),
+            "a==" to VariableAssignment("a", "="),
+            "a=a=a" to VariableAssignment("a", "a=a"),
+            "aaa=bbb" to VariableAssignment("aaa", "bbb"),
+            "  aaa=bbb" to VariableAssignment("aaa", "bbb"),
+            "\taaa=bbb" to VariableAssignment("aaa", "bbb"),
+            "Key=Value" to VariableAssignment("Key", "Value"),
+            "Key=\"some text\"" to VariableAssignment("Key", "\"some text\""),
+            "Key=\'some text\'" to VariableAssignment("Key", "\'some text\'"),
+            "Key=\"some long\ttext with\ttabs\"" to VariableAssignment("Key", "\"some long\ttext with\ttabs\""),
+            "Key=\'some long\ttext with\ttabs\'" to VariableAssignment("Key", "\'some long\ttext with\ttabs\'"),
+        ).mapIndexed { index, (userInput, expectedResult) ->
+            dynamicTest("${index + 1}. $userInput") {
+                val actualResult = CommandParserImpl().parse(userInput) as VariableAssignment
+                 assertEquals(expectedResult, actualResult)
+            }
+        }
+
+    @TestFactory
+    fun `should parse pipeline`() =
+        listOf(
+            "echo _ | cat" to listOf("echo", "cat"),
+            "echo _ _ | cat _ _ _ " to listOf("echo", "cat"),
+            "echo | echo | echo" to listOf("echo", "echo", "echo"),
+            "echo some text | echo another text | echo " to listOf("echo", "echo", "echo"),
+        ).mapIndexed { index, (userInput, expectedCommands) ->
+            dynamicTest("${index + 1}. $userInput") {
+                val parserResult = CommandParserImpl().parse(userInput)
+                val actualCommands = (parserResult as CommandSequenceTemplate).commands.map { it.name }
+                assertEquals(expectedCommands, actualCommands)
+            }
+        }
+
+    @TestFactory
+    fun `should fail on the incorrect pipeline`() =
+        listOf(
+            "|",
+            "||",
+            " |\t|\t| ",
+            "echo _ | cat | ",
+            "| echo _ _ | cat _ _ _ ",
+            "echo | echo || echo",
+            " | echo some text | echo another text | echo | ",
+        ).mapIndexed { index, userInput ->
+            dynamicTest("${index + 1}. $userInput") {
+                val parserResult = CommandParserImpl().parse(userInput)
+                assertTrue(parserResult is ParseError)
+            }
+        }
 }

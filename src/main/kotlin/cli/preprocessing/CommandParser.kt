@@ -21,11 +21,9 @@ class CommandParserImpl : CommandParser {
 
     private fun parseVariableAssignment(string: String): ParserResult? {
         var firstEqIdx = -1
-
         var openC: Char? = null
 
         for ((i, c) in string.withIndex()) {
-
             if (openC != null) {
                 if (c == openC) {
                     openC = null
@@ -44,7 +42,7 @@ class CommandParserImpl : CommandParser {
             return null
         }
 
-        val leftSubstring = string.substring(0, firstEqIdx)
+        val leftSubstring = string.substring(0, firstEqIdx).trim()
         var left = ""
         for (c in leftSubstring) {
             if (left.canAppend(c)) {
