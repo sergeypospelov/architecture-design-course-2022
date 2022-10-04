@@ -43,7 +43,7 @@ class CommandParserTest {
         ).mapIndexed { index, (userInput, expectedName) ->
             dynamicTest("${index + 1}. $userInput") {
                 val parserResult = CommandParserImpl().parse(userInput)
-                val actualName = (parserResult as CommandTemplate).name
+                val actualName = (parserResult as CommandSequenceTemplate).commands.single().name
                 assertEquals(expectedName, actualName)
             }
         }
@@ -68,7 +68,7 @@ class CommandParserTest {
         ).mapIndexed { index, (userInput, expectedArguments) ->
             dynamicTest("${index + 1}. $userInput") {
                 val parserResult = CommandParserImpl().parse(userInput)
-                val actualArguments = (parserResult as CommandTemplate).arguments
+                val actualArguments = (parserResult as CommandSequenceTemplate).commands.single().arguments
                 assertEquals(expectedArguments, actualArguments)
             }
         }

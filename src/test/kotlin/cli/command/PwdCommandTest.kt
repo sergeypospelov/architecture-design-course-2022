@@ -13,11 +13,15 @@ class PwdCommandTest {
     @Test
     fun `should returns the current directory`() {
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
+
         val exitCode = PwdCommand()
-            .execute(InputStream.nullInputStream(), outputStream)
+            .execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(0, exitCode)
         val expectedPath = Paths.get(File(".").absolutePath)
         val actualPath = Paths.get(outputStream.convertToString())
         assertEquals(expectedPath, actualPath)
+        assertEquals("", errorStream.convertToString())
     }
 }

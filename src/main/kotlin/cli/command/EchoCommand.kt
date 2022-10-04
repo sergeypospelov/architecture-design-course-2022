@@ -19,7 +19,7 @@ class EchoCommand(override val arguments: List<String>) : Command {
      * displays [arguments] to [outputStream]
      * @return status code (0 if success, other if error)
      */
-    override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
+    override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int {
         for (arg in arguments) {
             outputStream.printAndFlush(arg)
         }

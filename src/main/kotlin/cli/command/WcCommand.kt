@@ -20,11 +20,11 @@ class WcCommand(override val arguments: List<String>) : Command {
      * if [arguments] are empty, print [Result] for [inputStream] to [outputStream]
      * otherwise print [Result] for files passed in [arguments] to [outputStream]
      */
-    override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =
+    override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int =
         if (arguments.isEmpty()) {
             executeEmptyArguments(inputStream, outputStream)
         } else {
-            executeOnFiles(arguments, outputStream)
+            executeOnFiles(arguments, outputStream, errorStream)
         }
 
     private data class Result(
@@ -48,12 +48,12 @@ class WcCommand(override val arguments: List<String>) : Command {
         return 0
     }
 
-    private fun executeOnFiles(fileNames: List<String>, outputStream: OutputStream): Int {
+    private fun executeOnFiles(fileNames: List<String>, outputStream: OutputStream, errorStream: OutputStream): Int {
         if (fileNames.size == 1) {
-            return executeOnFile(fileNames[0], outputStream)
+            return executeOnFile(fileNames[0], outputStream, errorStream)
         }
         val exitCodes = fileNames.map { fileName ->
-            val exitCode = executeOnFile(fileName, outputStream)
+            val exitCode = executeOnFile(fileName, outputStream, errorStream)
             if (exitCode == 0)
                 outputStream.printAndFlush("\n")
             exitCode
@@ -63,8 +63,8 @@ class WcCommand(override val arguments: List<String>) : Command {
         return exitCodes.firstOrNull { it != 0 } ?: 0
     }
 
-    private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
-        checkExistsAndNotDirectory(fileName, outputStream) { file ->
+    private fun executeOnFile(fileName: String, outputStream: OutputStream, errorStream: OutputStream): Int =
+        checkExistsAndNotDirectory(fileName, errorStream) { file ->
             val text = file.readText()
             val result = computeResult(text)
             results += result

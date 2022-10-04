@@ -26,17 +26,17 @@ internal fun Command.fileIsDirectory(fileName: String): String = "$name: $fileNa
  */
 internal fun Command.checkExistsAndNotDirectory(
     fileName: String,
-    outputStream: OutputStream,
+    errorStream: OutputStream,
     block: (Path) -> Int
 ): Int {
     val file = SessionContext.currentDirectory.resolve(fileName)
     return when {
         !file.exists() -> {
-            outputStream.printAndFlush(fileDoesNotExist(fileName))
+            errorStream.printAndFlush(fileDoesNotExist(fileName))
             1
         }
         file.isDirectory() -> {
-            outputStream.printAndFlush(fileIsDirectory(fileName))
+            errorStream.printAndFlush(fileIsDirectory(fileName))
             1
         }
         else -> block(file)

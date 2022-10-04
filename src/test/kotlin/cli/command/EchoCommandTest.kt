@@ -22,10 +22,14 @@ class EchoCommandTest {
         ).mapIndexed { index, argument ->
             DynamicTest.dynamicTest("$index. $argument") {
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
                 val exitCode = EchoCommand(listOf(argument))
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 assertEquals(argument, outputStream.convertToString())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -45,10 +49,14 @@ class EchoCommandTest {
         ).mapIndexed { index, arguments ->
             DynamicTest.dynamicTest("$index. $arguments") {
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
                 val exitCode = EchoCommand(arguments)
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 assertEquals(arguments.joinToString(""), outputStream.convertToString())
+                assertEquals("", errorStream.convertToString())
             }
         }
 }

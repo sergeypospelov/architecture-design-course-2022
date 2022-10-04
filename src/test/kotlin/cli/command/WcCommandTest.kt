@@ -32,10 +32,15 @@ class WcCommandTest {
             DynamicTest.dynamicTest("$index. $userInput") {
                 val inputStream = ByteArrayInputStream(userInput.toByteArray())
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
+
                 val exitCode = WcCommand(listOf())
-                    .execute(inputStream, outputStream)
+                    .execute(inputStream, outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 assertEquals(listOf(expectedResult), outputStream.convertToString().parseWcResult())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -54,13 +59,16 @@ class WcCommandTest {
             DynamicTest.dynamicTest("$index. $fileName") {
                 val testFile = File("./src/test/resources/$fileName")
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
 
                 val exitCode = WcCommand(listOf(testFile.absolutePath))
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
                 assertEquals(0, exitCode)
 
                 val expectedResultsWithNames = listOf(expectedResult.copy(name = testFile.absolutePath))
                 assertEquals(expectedResultsWithNames, outputStream.convertToString().parseWcResult())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -97,9 +105,11 @@ class WcCommandTest {
                     File("./src/test/resources/$fileName")
                 }
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
 
                 val exitCode = WcCommand(testFiles.map { it.absolutePath })
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
                 assertEquals(0, exitCode)
 
                 val expectedResultsWithNames = expectedResults.toMutableList()
@@ -107,6 +117,7 @@ class WcCommandTest {
                     expectedResultsWithNames[i] = expectedResults[i].copy(name = testFiles[i].absolutePath)
                 }
                 assertEquals(expectedResultsWithNames, outputStream.convertToString().parseWcResult())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -114,10 +125,14 @@ class WcCommandTest {
     fun `should fail if the file does not exist`() {
         val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val wcCommand = WcCommand(listOf(fakeFile))
-        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
-        assertEquals(wcCommand.fileDoesNotExist(fakeFile), outputStream.convertToString())
+        assertEquals("", outputStream.convertToString())
+        assertEquals(wcCommand.fileDoesNotExist(fakeFile), errorStream.convertToString())
     }
 
     @Test
@@ -125,8 +140,11 @@ class WcCommandTest {
         val trueFile = "./src/test/resources/line.txt"
         val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val wcCommand = WcCommand(listOf(trueFile, fakeFile, trueFile))
-        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
     }
 
@@ -134,10 +152,14 @@ class WcCommandTest {
     fun `should fail if the file is a directory`() {
         val directory = "./src/test/resources/directory"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val wcCommand = WcCommand(listOf(directory))
-        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
-        assertEquals(wcCommand.fileIsDirectory(directory), outputStream.convertToString())
+        assertEquals("", outputStream.convertToString())
+        assertEquals(wcCommand.fileIsDirectory(directory), errorStream.convertToString())
     }
 
     @Test
@@ -145,8 +167,11 @@ class WcCommandTest {
         val trueFile = "./src/test/resources/line.txt"
         val directory = "./src/test/resources/directory"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
+
         val wcCommand = WcCommand(listOf(trueFile, directory, trueFile))
-        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = wcCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
         assertEquals(1, exitCode)
     }
 

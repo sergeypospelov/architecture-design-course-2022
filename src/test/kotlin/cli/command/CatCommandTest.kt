@@ -26,10 +26,14 @@ class CatCommandTest {
             DynamicTest.dynamicTest("$index. $userInput") {
                 val inputStream = ByteArrayInputStream(userInput.toByteArray())
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
                 val exitCode = CatCommand(listOf())
-                    .execute(inputStream, outputStream)
+                    .execute(inputStream, outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 assertEquals(userInput + "\n", outputStream.convertToString())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -44,10 +48,14 @@ class CatCommandTest {
             DynamicTest.dynamicTest("$index. $fileName") {
                 val testFile = File("./src/test/resources/$fileName")
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
                 val exitCode = CatCommand(listOf(testFile.absolutePath))
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 assertEquals(testFile.readText(), outputStream.convertToString())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -63,11 +71,15 @@ class CatCommandTest {
                     File("./src/test/resources/$fileName")
                 }
                 val outputStream = ByteArrayOutputStream()
+                val errorStream = ByteArrayOutputStream()
+
                 val exitCode = CatCommand(testFiles.map { it.absolutePath })
-                    .execute(InputStream.nullInputStream(), outputStream)
+                    .execute(InputStream.nullInputStream(), outputStream, errorStream)
+
                 assertEquals(0, exitCode)
                 val expectedOutput = testFiles.joinToString("") { it.readText() }
                 assertEquals(expectedOutput, outputStream.convertToString())
+                assertEquals("", errorStream.convertToString())
             }
         }
 
@@ -75,10 +87,14 @@ class CatCommandTest {
     fun `should fail if the file does not exist`() {
         val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val catCommand = CatCommand(listOf(fakeFile))
-        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
-        assertEquals(catCommand.fileDoesNotExist(fakeFile), outputStream.convertToString())
+        assertEquals("", outputStream.convertToString())
+        assertEquals(catCommand.fileDoesNotExist(fakeFile), errorStream.convertToString())
     }
 
     @Test
@@ -86,25 +102,35 @@ class CatCommandTest {
         val trueFile = "./src/test/resources/line.txt"
         val fakeFile = "./src/test/resources/some_weird_file_name.wtf"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val catCommand = CatCommand(listOf(trueFile, fakeFile, trueFile))
-        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
         val expectedOutput = listOf(
             File(trueFile).readText(),
-            catCommand.fileDoesNotExist(fakeFile), // only the second file was not processed correctly
             File(trueFile).readText()
         ).joinToString("")
+
+        val expectedError = catCommand.fileDoesNotExist(fakeFile) // only the second file was not processed correctly
+
         assertEquals(expectedOutput, outputStream.convertToString())
+        assertEquals(expectedError, errorStream.convertToString())
     }
 
     @Test
     fun `should fail if the file is a directory`() {
         val directory = "./src/test/resources/directory"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val catCommand = CatCommand(listOf(directory))
-        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
-        assertEquals(catCommand.fileIsDirectory(directory), outputStream.convertToString())
+        assertEquals("", outputStream.convertToString())
+        assertEquals(catCommand.fileIsDirectory(directory), errorStream.convertToString())
     }
 
     @Test
@@ -112,14 +138,20 @@ class CatCommandTest {
         val trueFile = "./src/test/resources/line.txt"
         val directory = "./src/test/resources/directory"
         val outputStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
         val catCommand = CatCommand(listOf(trueFile, directory, trueFile))
-        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream)
+
+        val exitCode = catCommand.execute(InputStream.nullInputStream(), outputStream, errorStream)
+
         assertEquals(1, exitCode)
         val expectedOutput = listOf(
             File(trueFile).readText(),
-            catCommand.fileIsDirectory(directory), // only the second file was not processed correctly
             File(trueFile).readText()
         ).joinToString("")
+
+        val expectedError = catCommand.fileIsDirectory(directory)
+
         assertEquals(expectedOutput, outputStream.convertToString())
+        assertEquals(expectedError, errorStream.convertToString())
     }
 }

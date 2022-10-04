@@ -19,5 +19,5 @@ interface Command {
      * @param outputStream output stream for command
      * @return status code (0 if success, other if error)
      */
-    fun execute(inputStream: InputStream, outputStream: OutputStream): Int
+    fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int
 }

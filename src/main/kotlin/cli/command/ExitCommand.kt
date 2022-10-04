@@ -21,7 +21,7 @@ class ExitCommand : Command {
      * exit the interpreter
      * never @return
      */
-    override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
+    override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int {
         exitProcess(0)
     }
 }

@@ -19,14 +19,17 @@ class CatCommand(override val arguments: List<String>) : Command {
     /**
      * if [arguments] are empty, prints [inputStream] to [outputStream]
      * otherwise prints the contents of files passed in [arguments] to [outputStream]
+     *
+     * @param [errorStream] default error stream
+     *
      * @return status code (0 if success, other if error)
      */
-    override fun execute(inputStream: InputStream, outputStream: OutputStream): Int =
+    override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int =
         if (arguments.isEmpty()) {
             executeEmptyArguments(inputStream, outputStream)
         } else {
             val exitCodes = arguments.map { fileName ->
-                executeOnFile(fileName, outputStream)
+                executeOnFile(fileName, outputStream, errorStream)
             }
             exitCodes.firstOrNull { it != 0 } ?: 0
         }
@@ -38,8 +41,8 @@ class CatCommand(override val arguments: List<String>) : Command {
         return 0
     }
 
-    private fun executeOnFile(fileName: String, outputStream: OutputStream): Int =
-        checkExistsAndNotDirectory(fileName, outputStream) { file ->
+    private fun executeOnFile(fileName: String, outputStream: OutputStream, errorStream: OutputStream): Int =
+        checkExistsAndNotDirectory(fileName, errorStream) { file ->
             val text = file.readText()
             outputStream.printAndFlush(text)
             0

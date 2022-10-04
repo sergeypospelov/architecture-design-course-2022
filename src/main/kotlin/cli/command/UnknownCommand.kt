@@ -17,7 +17,7 @@ class UnknownCommand(
      * execute command with [name] and [arguments] as external command
      * @return status code (0 if success, other if error)
      */
-    override fun execute(inputStream: InputStream, outputStream: OutputStream): Int {
+    override fun execute(inputStream: InputStream, outputStream: OutputStream, errorStream: OutputStream): Int {
         val process = ProcessBuilder()
             .command(*consoleRunnerPrefix.toTypedArray(), name, *arguments.toTypedArray())
             .start()
