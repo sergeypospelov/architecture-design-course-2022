@@ -23,6 +23,7 @@ class UnknownCommand(
             .start()
         val exitCode = process.waitFor()
         outputStream.write(process.inputStream.readAllBytes())
+        errorStream.write(process.errorStream.readAllBytes())
         return exitCode
     }
 

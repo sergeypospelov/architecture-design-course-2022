@@ -22,6 +22,13 @@ data class VariableAssignment(
 data class CommandTemplate(
     val name: String,
     val arguments: List<String>
+)
+
+/**
+ * list of commands that can be converted to [Pipeline] with [PipelineBuilder]
+ */
+data class CommandSequenceTemplate(
+    val commands: List<CommandTemplate>
 ) : ParserResult
 
 /**

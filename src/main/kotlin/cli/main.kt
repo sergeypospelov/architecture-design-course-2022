@@ -1,5 +1,6 @@
 package cli
 
+import cli.context.SessionContext
 import cli.execution.CommandExecutor
 import cli.execution.CommandExecutorImpl
 import cli.io.CommandReader
@@ -10,9 +11,10 @@ import cli.preprocessing.*
 
 fun main() {
     val commandReader: CommandReader = ConsoleReader()
-    val commandParser: CommandParser = CommandParserImpl()
+    val commandParser: CommandParser = CommandParserImpl(SessionContext.variables)
     val commandBuilder: CommandBuilder = CommandBuilderImpl()
-    val commandExecutor: CommandExecutor = CommandExecutorImpl(System.`in`)
+    val pipelineBuilder: PipelineBuilder = PipelineBuilderImpl(commandBuilder)
+    val commandExecutor: CommandExecutor = CommandExecutorImpl(System.`in`, System.out, System.err)
     val resultPrinter: ResultPrinter = ConsolePrinter()
 
     while (true) {
@@ -21,15 +23,16 @@ fun main() {
 
         when (val parserResult = commandParser.parse(input)) {
             Retry -> continue
-            is CommandTemplate -> {
-                val command = commandBuilder.buildCommand(parserResult)
-                val (result, _) = commandExecutor.execute(command)
-                resultPrinter.printResult(result)
+            is CommandSequenceTemplate -> {
+                val pipeline = pipelineBuilder.buildPipeline(parserResult)
+                commandExecutor.execute(pipeline)
             }
             is ParseError -> {
                 resultPrinter.printResult(parserResult.errorDescription)
             }
-            is VariableAssignment -> TODO("Phase 2: add variable assignment")
+            is VariableAssignment -> {
+                SessionContext.variables[parserResult.name] = parserResult.value
+            }
         }
     }
 }
