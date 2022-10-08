@@ -5,8 +5,11 @@ import java.io.InputStream
 import java.io.OutputStream
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
+import kotlin.math.min
 
 private const val GREP_COMMAND_NAME = "grep"
+
+internal const val GREP_RESULT_SEPARATOR = "\n--\n"
 
 class GrepCommand(override val arguments: List<String>) : Command {
 
@@ -18,13 +21,13 @@ class GrepCommand(override val arguments: List<String>) : Command {
 
         checkExistsAndNotDirectory(grepArguments.fileName, errorStream) { path ->
             val fileContent = path.toFile().readText()
-            val fileContentLines = fileContent.split("\n")
+            val fileContentLines = fileContent.split(System.lineSeparator())
             val queryRegex = constructQueryRegex(grepArguments)
             val matchRanges = queryRegex.findAll(fileContent).map { it.range }.toList()
             getLineNumbersByRanges(matchRanges, fileContentLines).forEachIndexed { index, matchLineNumber ->
                 if (index != 0)
-                    outputStream.printAndFlush("\n--\n")
-                for (lineNumber in matchLineNumber..matchLineNumber + grepArguments.extraLinesToPrint) {
+                    outputStream.printAndFlush(GREP_RESULT_SEPARATOR)
+                for (lineNumber in matchLineNumber..min(matchLineNumber + grepArguments.extraLinesToPrint, fileContentLines.size - 1)) {
                     if (lineNumber != matchLineNumber)
                         outputStream.printAndFlush("\n")
                     outputStream.printAndFlush(fileContentLines[lineNumber])
@@ -58,7 +61,7 @@ class GrepCommand(override val arguments: List<String>) : Command {
         var currentIndex = 0
         var currentEndsIndex = 0
         for ((lineIndex, line) in lines.withIndex()) {
-            currentIndex += line.length + "\n".length
+            currentIndex += line.length + System.lineSeparator().length
             while (currentEndsIndex < sortedEnds.size && sortedEnds[currentEndsIndex] < currentIndex) {
                 resultLineNumbers.add(lineIndex)
                 currentEndsIndex += 1
