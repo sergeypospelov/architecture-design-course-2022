@@ -21,6 +21,7 @@ class CommandBuilderImpl : CommandBuilder {
             "exit" -> ExitCommand()
             "pwd"  -> PwdCommand()
             "wc"   -> WcCommand(template.arguments)
+            "grep" -> GrepCommand(template.arguments)
             else   -> UnknownCommand(template.name, template.arguments)
         }
 }
