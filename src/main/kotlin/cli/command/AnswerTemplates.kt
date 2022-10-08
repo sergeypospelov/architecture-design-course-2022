@@ -22,12 +22,12 @@ internal fun Command.fileIsDirectory(fileName: String): String = "$name: $fileNa
 
 /**
  * checks is file [fileName] exists and is not directory
- * @param block is executed on file if check pass
+ * @param onCheckPassed is executed on file if check pass
  */
 internal fun Command.checkExistsAndNotDirectory(
     fileName: String,
     errorStream: OutputStream,
-    block: (Path) -> Int
+    onCheckPassed: (Path) -> Int
 ): Int {
     val file = SessionContext.currentDirectory.resolve(fileName)
     return when {
@@ -39,6 +39,6 @@ internal fun Command.checkExistsAndNotDirectory(
             errorStream.printAndFlush(fileIsDirectory(fileName))
             1
         }
-        else -> block(file)
+        else -> onCheckPassed(file)
     }
 }
