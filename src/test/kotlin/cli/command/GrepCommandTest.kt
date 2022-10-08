@@ -10,7 +10,6 @@ import java.io.InputStream
 
 class GrepCommandTest {
 
-
     @TestFactory
     fun `should not find any matches`() =
         listOf(
@@ -188,7 +187,7 @@ class GrepCommandTest {
                     .execute(inputStream, outputStream, errorStream)
 
                 Assertions.assertEquals(0, exitCode)
-                Assertions.assertEquals(expectedLinesCount, outputStream.convertToString().countLines())
+                Assertions.assertEquals(expectedLinesCount, outputStream.convertToString().split("\n").size)
                 Assertions.assertEquals("", errorStream.convertToString())
             }
         }
@@ -201,7 +200,4 @@ class GrepCommandTest {
 
     private fun String.countGrepResults(): Int =
         this.split(nl).filterNot { it.isEmpty() }.size
-
-    private fun String.countLines(): Int =
-        this.split("\n").size
 }
