@@ -1,5 +1,6 @@
 package cli.preprocessing
 
+import cli.context.EnvironmentVariables
 import cli.context.SessionContext
 
 /**
@@ -14,7 +15,9 @@ interface Substitutor {
     fun substitute(string: String): String
 }
 
-class SubstitutorImpl : Substitutor {
+class SubstitutorImpl(
+    val environmentVariables: EnvironmentVariables
+) : Substitutor {
 
     override fun substitute(string: String): String {
         val result = StringBuilder()
@@ -25,7 +28,7 @@ class SubstitutorImpl : Substitutor {
 
         fun substitute() {
             if (variable.isNotEmpty()) {
-                val value = SessionContext.variables.get(variable)
+                val value = environmentVariables.get(variable)
                 result.append(value)
                 isVariable = false
                 variable = ""

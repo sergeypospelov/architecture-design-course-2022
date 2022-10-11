@@ -9,7 +9,7 @@ import cli.preprocessing.*
 
 fun main() {
     val commandReader: CommandReader = ConsoleReader()
-    val substitutor: Substitutor = SubstitutorImpl()
+    val substitutor: Substitutor = SubstitutorImpl(SessionContext.variables)
     val commandParser: CommandParser = CommandParserImpl()
     val commandBuilder: CommandBuilder = CommandBuilderImpl()
     val pipelineBuilder: PipelineBuilder = PipelineBuilderImpl(commandBuilder)
@@ -19,9 +19,9 @@ fun main() {
     while (true) {
         print("$ ")
         val input = commandReader.readInput()
-        val substitutorResult = substitutor.substitute(input)
+        val inputWithSubstitutions = substitutor.substitute(input)
 
-        when (val parserResult = commandParser.parse(substitutorResult)) {
+        when (val parserResult = commandParser.parse(inputWithSubstitutions)) {
             Retry -> continue
             is CommandSequenceTemplate -> {
                 val pipeline = pipelineBuilder.buildPipeline(parserResult)
@@ -29,7 +29,7 @@ fun main() {
                 SessionContext.variables.set("?", exitCode.toString())
             }
             is ParseError -> {
-                println(parserResult.errorDescription)
+                System.err.println(parserResult.errorDescription)
             }
             is VariableAssignment -> {
                 SessionContext.variables.set(parserResult.name, parserResult.value)

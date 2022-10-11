@@ -29,11 +29,13 @@ class GrepCommand(override val arguments: List<String>) : Command {
             val queryRegex = constructQueryRegex(grepArguments)
             val matchRanges = queryRegex.findAll(fileContent).map { it.range }.toList()
             getLineNumbersByRanges(matchRanges, fileContentLines).forEachIndexed { index, matchLineNumber ->
-                if (index != 0)
+                if (index != 0) {
                     outputStream.printAndFlush(GREP_RESULT_SEPARATOR)
+                }
                 for (lineNumber in matchLineNumber..min(matchLineNumber + grepArguments.extraLinesToPrint, fileContentLines.size - 1)) {
-                    if (lineNumber != matchLineNumber)
+                    if (lineNumber != matchLineNumber) {
                         outputStream.printAndFlush("\n")
+                    }
                     outputStream.printAndFlush(fileContentLines[lineNumber])
                 }
             }
@@ -50,10 +52,11 @@ class GrepCommand(override val arguments: List<String>) : Command {
         if (grepArguments.isCaseInsensitive)
             regexOptions.add(RegexOption.IGNORE_CASE)
 
-        val query = if (grepArguments.isWholeWords)
+        val query = if (grepArguments.isWholeWords) {
             "\\b${grepArguments.query}\\b"
-        else
+        } else {
             grepArguments.query
+        }
 
         return Regex(query, regexOptions.toSet())
     }
