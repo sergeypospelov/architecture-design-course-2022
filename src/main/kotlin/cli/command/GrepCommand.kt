@@ -11,6 +11,10 @@ private const val GREP_COMMAND_NAME = "grep"
 
 internal const val GREP_RESULT_SEPARATOR = "\n--\n"
 
+/**
+ * Implementation for [Command] interface for bash command grep:
+ * grep is used to search text and strings in a given file
+ */
 class GrepCommand(override val arguments: List<String>) : Command {
 
     override val name = GREP_COMMAND_NAME

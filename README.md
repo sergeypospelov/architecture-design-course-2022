@@ -42,8 +42,6 @@ API:
 - `constructor(SessionContext)` -- инициализирует `Substitutor` каким-то `SessionContext`'ом
 - `substitute(String): String` -- выполняет подстановку
 
-Данный класс может выкинуть `BashException` с каким-то описанием в случае неудачной подстановки (синтаксическая ошибка, например).
-
 ### Фаза 1
 В варианте без подстановок, можно полностью выкинуть этот класс, либо считать, что он выполняет тождественное преобразование.
 
@@ -56,6 +54,9 @@ API:
 `VariableAssignment` -- дата-класс для представления новых переменных. Состоит из имени новой переменной и ее значения.
 ### ParseError
 `ParseError` -- дата-класс для представления ошибок во время парсинга. Содержит сообщение об ошибке.
+### CommandSequenceTemplate
+`CommandSequenceTemplate` представляет собой список `CommandTemplate`, идущих подряд.
+
 
 ## CommandParser
 
@@ -69,18 +70,26 @@ API:
 Интерфейс для команды, состоящий из имени команды и аргументов. Наследники реализуют функцию `execute`. Объект, вызывающий функцию `execute`, обязан знать, откуда читать данные и куда писать результат.
 
 API:
-- `execute(inputStream, outputStream)`
+- `execute(inputStream, outputStream, errorStream)`
 
 ## CommandBuilder
 
-`CommandBuilder` реализует логику создания `Command` из `CommandTemplate`. 
+`CommandBuilder` реализует логику создания `Command` из `CommandTemplate`.
+
+## Pipeline
+
+`Pipeline` представляет собой последовательность `Command`.
+
+##PipelineBuilder
+
+`PipelineBuilder` реализует логику создания `Pipeline` из `CommandSequenceTemplate`.
 
 ## CommandExecutor
 
 `CommandExecutor` исполняет переданную команду и управляет потоками ввода-вывода.
 
 API:
-- `execute(Command): String` -- вычисляет результат выполнения пайплайна, а именно:
+- `execute(Pipeline): String` -- вычисляет результат выполнения пайплайна, а именно:
     - поддерживается `curInputStream = System.in` и `curOutputStream = ByteArrayOutputStream()`
     - очередной команде на вход передаётся `curInputStream` и `curOutputStream`
     - затем `curInputStream = curOutputStream.toByteArray().asInputStream()`, `curOutputStream = ByteArrayOutputStream()`, таким образом реализуется пайп
