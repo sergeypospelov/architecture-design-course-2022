@@ -4,11 +4,11 @@ package cli.context
 /**
  * Class for environmental variables storage
  */
-class EnvironmentVariables {
+class EnvironmentVariables(
+    env: Collection<Pair<String, String>> = emptyList()
+) {
 
-    private val storage: MutableMap<String, String> = mutableMapOf(
-        "?" to "0"
-    )
+    private val storage: MutableMap<String, String> = (env + ("?" to "0")).toMap().toMutableMap()
 
     /**
      * add new variable with name [variable] and value [value] to storage

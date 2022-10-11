@@ -1,8 +1,7 @@
 package cli.preprocessing
 
-import cli.context.SessionContext
+import cli.context.EnvironmentVariables
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 
@@ -16,20 +15,16 @@ class SubstitutorTest {
         "my_command" to "echo",
     )
 
-    @BeforeEach
-    fun setUp() {
-        environmentVariables.map { (variable, value) ->
-            SessionContext.variables.set(variable, value)
-        }
-    }
-
     @TestFactory
     fun `should substitute environment variables`() =
         (listOf("?" to "0") + environmentVariables)
-            .mapIndexed { index, (userInput, expectedResult) ->
-                dynamicTest("$index. $userInput") {
-                    val actualResult = SubstitutorImpl().substitute("$$userInput")
-                    assertEquals(expectedResult, actualResult)
+            .run {
+                val env = EnvironmentVariables(environmentVariables)
+                mapIndexed { index, (userInput, expectedResult) ->
+                    dynamicTest("$index. $userInput") {
+                        val actualResult = SubstitutorImpl(env).substitute("$$userInput")
+                        assertEquals(expectedResult, actualResult)
+                    }
                 }
             }
 
@@ -42,10 +37,13 @@ class SubstitutorTest {
             " ${"$"}my_command\tsome text " to " echo\tsome text ",
             "cat ${"$"}KEY " to "cat VALUE ",
             "${"$"}my_command ${"$"}num" to "echo 1",
-        ).mapIndexed { index, (userInput, expectedResult) ->
-            dynamicTest("$index. $userInput") {
-                val actualResult = SubstitutorImpl().substitute(userInput)
-                assertEquals(expectedResult, actualResult)
+        ).run {
+            val env = EnvironmentVariables(environmentVariables)
+            mapIndexed { index, (userInput, expectedResult) ->
+                dynamicTest("$index. $userInput") {
+                    val actualResult = SubstitutorImpl(env).substitute(userInput)
+                    assertEquals(expectedResult, actualResult)
+                }
             }
         }
 
@@ -58,10 +56,13 @@ class SubstitutorTest {
             "cat KEY" to "cat KEY",
             "cat KEY | echo" to "cat KEY | echo",
             "my_command num" to "my_command num",
-        ).mapIndexed { index, (userInput, expectedResult) ->
-            dynamicTest("$index. $userInput") {
-                val actualResult = SubstitutorImpl().substitute(userInput)
-                assertEquals(expectedResult, actualResult)
+        ).run {
+            val env = EnvironmentVariables(environmentVariables)
+            mapIndexed { index, (userInput, expectedResult) ->
+                dynamicTest("$index. $userInput") {
+                    val actualResult = SubstitutorImpl(env).substitute(userInput)
+                    assertEquals(expectedResult, actualResult)
+                }
             }
         }
 
@@ -76,10 +77,13 @@ class SubstitutorTest {
             "cat \"${"$"}KEY\".txt" to "cat \"VALUE\".txt",
             "\"${"$"}my_command ${"$"}num\"" to "\"echo 1\"",
             "${"$"}my_command \"${"$"}num\"" to "echo \"1\"",
-        ).mapIndexed { index, (userInput, expectedResult) ->
-            dynamicTest("$index. $userInput") {
-                val actualResult = SubstitutorImpl().substitute(userInput)
-                assertEquals(expectedResult, actualResult)
+        ).run {
+            val env = EnvironmentVariables(environmentVariables)
+            mapIndexed { index, (userInput, expectedResult) ->
+                dynamicTest("$index. $userInput") {
+                    val actualResult = SubstitutorImpl(env).substitute(userInput)
+                    assertEquals(expectedResult, actualResult)
+                }
             }
         }
 
@@ -94,10 +98,13 @@ class SubstitutorTest {
             "cat \'${"$"}KEY\'.txt" to "cat \'${"$"}KEY\'.txt",
             "\'${"$"}my_command ${"$"}num\'" to "\'${"$"}my_command ${"$"}num\'",
             "${"$"}my_command \'${"$"}num\'" to "echo \'${"$"}num\'",
-        ).mapIndexed { index, (userInput, expectedResult) ->
-            dynamicTest("$index. $userInput") {
-                val actualResult = SubstitutorImpl().substitute(userInput)
-                assertEquals(expectedResult, actualResult)
+        ).run {
+            val env = EnvironmentVariables(environmentVariables)
+            mapIndexed { index, (userInput, expectedResult) ->
+                dynamicTest("$index. $userInput") {
+                    val actualResult = SubstitutorImpl(env).substitute(userInput)
+                    assertEquals(expectedResult, actualResult)
+                }
             }
         }
 
@@ -107,10 +114,13 @@ class SubstitutorTest {
             "${"$"}!" to "!",
             "${"$"}UNKNOWN" to "",
             "${"$"}${"$"}" to "",
-        ).mapIndexed { index, (userInput, expectedResult) ->
-            dynamicTest("$index. $userInput") {
-                val actualResult = SubstitutorImpl().substitute(userInput)
-                assertEquals(expectedResult, actualResult)
+        ).run {
+            val env = EnvironmentVariables(environmentVariables)
+            mapIndexed { index, (userInput, expectedResult) ->
+                dynamicTest("$index. $userInput") {
+                    val actualResult = SubstitutorImpl(env).substitute(userInput)
+                    assertEquals(expectedResult, actualResult)
+                }
             }
         }
 }
