@@ -20,6 +20,8 @@ internal fun Command.fileDoesNotExist(fileName: String): String = "$name: $fileN
  */
 internal fun Command.fileIsDirectory(fileName: String): String = "$name: $fileName: $FILE_IS_DIRECTORY\n"
 
+internal fun fileOrDirectoryDoesNotExists(fileName: String): String = "$fileName: No such file or directory\n"
+
 /**
  * checks is file [fileName] exists and is not directory
  * @param onCheckPassed is executed on file if check pass

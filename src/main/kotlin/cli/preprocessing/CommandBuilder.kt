@@ -22,6 +22,8 @@ class CommandBuilderImpl : CommandBuilder {
             "pwd"  -> PwdCommand()
             "wc"   -> WcCommand(template.arguments)
             "grep" -> GrepCommand(template.arguments)
+            "ls" -> LsCommand(template.arguments)
+            "cd" -> CdCommand(template.arguments)
             else   -> UnknownCommand(template.name, template.arguments)
         }
 }

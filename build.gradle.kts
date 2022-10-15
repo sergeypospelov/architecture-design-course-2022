@@ -13,6 +13,9 @@ dependencies {
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.0")
+
+    // mockk library for tests
+    testImplementation("io.mockk:mockk:1.13.2")
 }
 
 tasks.test {
