@@ -17,6 +17,7 @@ class CdCommandTest {
     fun setUp() {
         outputStream = ByteArrayOutputStream()
         errorStream = ByteArrayOutputStream()
+        SessionContext.currentDirectory = Paths.get(System.getProperty("user.dir"))
     }
 
     @Test

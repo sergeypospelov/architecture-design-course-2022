@@ -20,14 +20,9 @@ class LsCommandTest {
             .execute(InputStream.nullInputStream(), outputStream, errorStream)
 
         Assertions.assertEquals(0, exitCode)
-        val expectedOutput = "directory\n"+
-                "empty.txt\n" +
-                "blank.txt\n" +
-                "grep.txt\n" +
-                "line.txt\n" +
-                "text.txt\n" +
-                "script.py\n"
-        val actualOutput = outputStream.convertToString()
+        val expectedOutput = listOf("blank.txt", "empty.txt", "grep.txt", "line.txt", "script.py", "text.txt", "directory", "")
+
+        val actualOutput = outputStream.convertToString().split("\n")
         Assertions.assertEquals(expectedOutput, actualOutput)
     }
 
